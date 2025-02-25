@@ -1,1 +1,2 @@
 To run this project -> docker--compose up --build
+This project leverages Docker Compose to orchestrate a multi-service environment and Nginx to efficiently distribute incoming traffic. It deploys several containerized web services alongside essential dependencies like Redis and PostgreSQL. The Nginx reverse proxy is configured to load balance requests across the web service instances, ensuring scalability and improved reliability.
