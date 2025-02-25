@@ -1,1 +1,46 @@
-# Students: Create your docker-compose.yml file here following the README.md instructions
+version: '3.8'
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: shortener
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    environment:
+      REDIS_HOST: redis
+      DB_HOST: postgres
+      DB_NAME: shortener
+      DB_USER: user
+      DB_PASS: "password"
+    depends_on: 
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "9999:9999"
+              
+volumes:
+  postgres_data:
+  redis_data:
