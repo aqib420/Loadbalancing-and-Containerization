@@ -1,1 +1,6 @@
-# Students: Create your Dockerfile here following the README.md instructions
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY service.py .
+CMD ["python", "service.py"]
